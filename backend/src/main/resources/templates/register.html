@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Register</h2>
+
+<form action="/register" method="post">
+    Username: <input type="text" name="username"/><br><br>
+    Password: <input type="password" name="password"/><br><br>
+    <button type="submit">Create Account</button>
+</form>
+
+<p th:text="${error}" style="color:red;"></p>
+
+<a href="/">Back to login</a>
+</body>
+</html>

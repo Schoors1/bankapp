@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Bank Account</h2>
+
+<p>Username: <span th:text="${user.username}"></span></p>
+<p>Balance: <span th:text="${user.balance}"></span></p>
+
+<h3>Transfer Money</h3>
+
+<form action="/transfer" method="post">
+    To: <input type="text" name="to"/><br><br>
+    Amount: <input type="number" name="amount"/><br><br>
+    <button type="submit">Send</button>
+</form>
+
+<p th:text="${error}" style="color:red;"></p>
+
+<br>
+<a href="/logout">Logout</a>
+
+</body>
+</html>
