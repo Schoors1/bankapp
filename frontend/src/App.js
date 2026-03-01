@@ -19,24 +19,27 @@ function App() {
             body: JSON.stringify({ username, password })
         });
 
-        const data = await res.text();
-        setMessage(data);
+        const data = await res.json();
+        setMessage(data.message);
     };
 
     const login = async () => {
+        setUser(null);
+
         const res = await fetch(`${API}/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password })
         });
 
-        const data = await res.text();
+        const data = await res.json();
 
-        if (res.ok) {
+        if (data.success === true) {
             setUser(username);
             setMessage("");
+            setBalance(null);
         } else {
-            setMessage(data);
+            setMessage(data.message);
         }
     };
 
@@ -46,12 +49,19 @@ function App() {
         setPassword("");
         setBalance(null);
         setMessage("");
+        setToUser("");
+        setAmount("");
     };
 
     const getBalance = async () => {
         const res = await fetch(`${API}/balance/${user}`);
         const data = await res.json();
-        setBalance(data.balance);
+
+        if (data.success) {
+            setBalance(data.balance);
+        } else {
+            setMessage(data.message);
+        }
     };
 
     const transfer = async () => {
@@ -65,8 +75,14 @@ function App() {
             })
         });
 
-        const data = await res.text();
-        setMessage(data);
+        const data = await res.json();
+        setMessage(data.message);
+
+        if (data.success) {
+            setBalance(data.balance);
+            setAmount("");
+            setToUser("");
+        }
     };
 
     return (
@@ -92,9 +108,7 @@ function App() {
 
                     <div style={{ display: "flex", gap: "10px" }}>
                         <button onClick={login}>Login</button>
-                        <button onClick={register} className="button-secondary">
-                            Register
-                        </button>
+                        <button onClick={register}>Register</button>
                     </div>
 
                     {message && <div className="message">{message}</div>}
@@ -105,26 +119,20 @@ function App() {
                 <>
                     <h2>Welcome, {user}</h2>
 
-                    <button
-                        onClick={logout}
-                        className="button-secondary"
-                        style={{ width: "100%", marginBottom: "15px" }}
-                    >
-                        Logout
-                    </button>
+                    <button onClick={logout}>Logout</button>
 
-                    <div className="section">
+                    <div style={{ marginTop: "20px" }}>
                         <h3>Balance</h3>
                         <button onClick={getBalance}>Check Balance</button>
 
                         {balance !== null && (
-                            <div className="balance-box">
+                            <div style={{ marginTop: "10px" }}>
                                 Balance: ${balance}
                             </div>
                         )}
                     </div>
 
-                    <div className="section">
+                    <div style={{ marginTop: "20px" }}>
                         <h3>Transfer Money</h3>
 
                         <input
@@ -139,7 +147,7 @@ function App() {
                             onChange={e => setAmount(e.target.value)}
                         />
 
-                        <button onClick={transfer} style={{ width: "100%" }}>
+                        <button onClick={transfer}>
                             Send Money
                         </button>
 
