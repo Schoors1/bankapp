@@ -1,8 +1,10 @@
 package com.bank.bankapp.controller;
 
 import com.bank.bankapp.dto.*;
+import com.bank.bankapp.model.User;
 import com.bank.bankapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -33,5 +35,9 @@ public class BankController {
     @PostMapping("/transfer")
     public ApiResponse transfer(@RequestBody TransferRequest request) {
         return service.transfer(request.from, request.to, request.amount);
+    }
+    @GetMapping("/admin/users")
+    public List<User> getAllUsers() {
+        return service.getAllUsers();
     }
 }

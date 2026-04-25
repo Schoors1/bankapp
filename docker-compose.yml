@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-
   db:
     image: postgres:15
     container_name: bank-db
@@ -13,6 +12,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    # Week 15: Healthcheck (проверка надежности)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bankuser -d bankdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./backend
@@ -20,7 +25,13 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy # Week 15: Ждем готовности базы
+    environment:
+      - DB_HOST=db
+      - DB_NAME=bankdb
+      - DB_USER=bankuser
+      - DB_PASS=bankpass
 
   frontend:
     build: ./frontend
